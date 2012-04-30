@@ -30,16 +30,33 @@
 #define AVS_MACRO_H_
 
 #include<string>
-using std::string;
+#include<vector>
 
 namespace VPPreProc {
 
   class VMacro {
   public:
+    // constructors
+    VMacro(const std::string&, const std::string&, const std::string&);
+
+    // helpers
+    bool is_parameterized() const { return m_paNum > 0; }
+    bool is_valid() const { return valid; }
+    std::string get_value(const std::vector<string>& para = std::vector<string>()); /* get the value of a macro */
+    std::string get_value(const std::string&); /* get the value of a macro */
+    bool format_para(const std::string&, std::vector<string>&); /* format a string to normal parameter list */
     
-    string name;                /* the name of the macro */
-    bool   func;                /* true when it is function */
+    //data
+    std::string m_name;         /* the name of the macro */
+    unsigned int m_paNum;       /* number of parameters */
+    std::string value;          /* formated macro value */
     
+  private:
+    // data
+    bool valid;
+    
+    // helpers
+    void format(const std::string&, const std::string&); /* format the formal and value to the boost formate formate */
 
   };
 
