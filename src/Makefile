@@ -34,12 +34,8 @@ all: $(TARGETS)
 $(TARGETS): %.o:%.cpp %.h $(HEADERS)
 	$(CXX) $(INCDIRS) $(CXXFLAGS) -c $< -o $@
 
-VPreLex.cpp: VPreLex.l VPreLex.h
-	$(FLEX_EXE) $<
-
 .PHONY: clean
 
 clean:
 	-rm *.o *.output
-	-rm VPreLex.cpp
 

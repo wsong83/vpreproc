@@ -31,33 +31,24 @@
 
 #include<string>
 #include<vector>
+#include<map>
 
 namespace VPPreProc {
 
   class VMacro {
   public:
     // constructors
-    VMacro(const std::string&, const std::string&, const std::string&);
+    VMacro(const std::string& nm, const std::string& mv, const std::string& para = std::string())
+      : m_name(nm), m_para(para), m_value(mv) {}
 
     // helpers
-    bool is_parameterized() const { return m_paNum > 0; }
-    bool is_valid() const { return valid; }
-    std::string get_value(const std::vector<string>& para = std::vector<string>()); /* get the value of a macro */
-    std::string get_value(const std::string&); /* get the value of a macro */
-    bool format_para(const std::string&, std::vector<string>&); /* format a string to normal parameter list */
+    bool is_parameterized() const { return m_para.size() > 0 }
     
     //data
     std::string m_name;         /* the name of the macro */
-    unsigned int m_paNum;       /* number of parameters */
-    std::string value;          /* formated macro value */
+    std::string m_para;         /* parameter list */
+    std::string m_value;        /* body definition */
     
-  private:
-    // data
-    bool valid;
-    
-    // helpers
-    void format(const std::string&, const std::string&); /* format the formal and value to the boost formate formate */
-
   };
 
 }
