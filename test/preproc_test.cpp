@@ -38,5 +38,11 @@ int main(int argc, char* argv[])
   preprocp->configure(filelinep);
   preprocp->openFile(argv[1]);
 
+  while(true) {
+    string rt = preprocp->getline();
+    cout << rt;
+    if(rt.size() == 0) break;
+  }
+
   return 1;
 }

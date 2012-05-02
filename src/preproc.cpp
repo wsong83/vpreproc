@@ -62,12 +62,16 @@ void VPPreProc::VPreProcXs::include(string filename) {
 }
 void VPPreProc::VPreProcXs::undef(string define) {
   map<string, VMacro*>::iterator it = db.find(define);
-  db.erase(it);
+  if(it != db.end()) {
+    delete it->second;
+    db.erase(it);
+  }
 }
 void VPPreProc::VPreProcXs::undefineall() {
     // delete the macro database
     for (map<string, VMacro*>::iterator it=db.begin(); it!=db.end(); ++it) {
       delete it->second;
+      db.erase(it);
     }  
 }
 void VPPreProc::VPreProcXs::define(string define, string value, string params) {
@@ -77,7 +81,12 @@ bool VPPreProc::VPreProcXs::defExists(string define) {
   return db.find(define) != db.end();
 }
 string VPPreProc::VPreProcXs::defParams(string define) {
-  return db.find(define)->second->m_para;
+  map<string, VMacro*>::iterator it = db.find(define);
+  
+  if(it != db.end()) 
+    return it->second->m_para == "" ? "0" : it->second->m_para;
+  else 
+    return "";
 }
 string VPPreProc::VPreProcXs::defValue(string define) {
   return db.find(define)->second->m_value;
