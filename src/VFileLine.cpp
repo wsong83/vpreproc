@@ -19,22 +19,24 @@
 /// Code available from: http://www.veripool.org/verilog-perl
 ///
 //*************************************************************************
-
+
 #include <cstdio>
 #include <cstdlib>
 
 #include "VFileLine.h"
 
-int VFileLine::s_numErrors = 0;		///< Number of errors detected
+using namespace VPPreProc;
+
+int VPPreProc::VFileLine::s_numErrors = 0;		///< Number of errors detected
 
 //============================================================================
 
-void VFileLine::init(const string& filename, int lineno) {
+void VPPreProc::VFileLine::init(const string& filename, int lineno) {
     m_filename = filename;
     m_lineno = lineno;
 }
 
-const string VFileLine::filebasename () const {
+const string VPPreProc::VFileLine::filebasename () const {
     string name = filename();
     string::size_type slash;
     if ((slash = name.rfind("/")) != string::npos) {
@@ -43,12 +45,12 @@ const string VFileLine::filebasename () const {
     return name;
 }
 
-void VFileLine::fatal(const string& msg) {
+void VPPreProc::VFileLine::fatal(const string& msg) {
     error(msg);
     error("Fatal Error detected");
     abort();
 }
-void VFileLine::error(const string& msg) {
+void VPPreProc::VFileLine::error(const string& msg) {
     VFileLine::s_numErrors++;
     if (msg[msg.length()-1] != '\n') {
 	fprintf (stderr, "%%Error: %s", msg.c_str());
@@ -57,19 +59,19 @@ void VFileLine::error(const string& msg) {
     }
 }
 
-const char* VFileLine::itoa(int i) {
+const char* VPPreProc::VFileLine::itoa(int i) {
     static char buf[100];
     sprintf(buf,"%d",i);
     return buf;
 }
 
-string VFileLine::lineDirectiveStrg(int enterExit) const {
+string VPPreProc::VFileLine::lineDirectiveStrg(int enterExit) const {
     char numbuf[20]; sprintf(numbuf, "%d", lineno());
     char levelbuf[20]; sprintf(levelbuf, "%d", enterExit);
     return ((string)"`line "+numbuf+" \""+filename()+"\" "+levelbuf+"\n");
 }
 
-VFileLine* VFileLine::lineDirective(const char* textp, int& enterExitRef) {
+VFileLine* VPPreProc::VFileLine::lineDirective(const char* textp, int& enterExitRef) {
     // Handle `line directive
     // Skip `line
     while (*textp && isspace(*textp)) textp++;
@@ -106,7 +108,7 @@ VFileLine* VFileLine::lineDirective(const char* textp, int& enterExitRef) {
 //======================================================================
 // Global scope
 
-ostream& operator<<(ostream& os, VFileLine* flp) {
+ostream& VPPreProc::operator<<(ostream& os, VFileLine* flp) {
     if (flp->filename()!="") {
 	os <<flp->filename()<<":"<<dec<<flp->lineno()<<": "<<hex;
     }

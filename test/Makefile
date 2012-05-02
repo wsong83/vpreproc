@@ -18,24 +18,24 @@
 #    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 #
 # Makefile
-# Due to be replace by autoconf tool suite
-# 26/04/2012   Wei Song
+# 27/04/2012   Wei Song
 #
 #
 
 # variables
 INCDIRS = -I./ -I../
-TARGETS = VFileLine.o VPreLex.o VPreProc.o VMacro.o preproc.o
-HEADERS = 
+TARGETS = preproc_test
+OTHER_OBJS = $(wildcard ../src/*.o)
+
 
 # targets
 all: $(TARGETS)
 
-$(TARGETS): %.o:%.cpp %.h $(HEADERS)
-	$(CXX) $(INCDIRS) $(CXXFLAGS) -c $< -o $@
+$(TARGETS): % : %.cpp $(OTHER_OBJS)
+	$(CXX) $(INCDIRS) $(CXXFLAGS) $< $(OTHER_OBJS) $(LINKFLAGS) -o $@
 
 .PHONY: clean
 
 clean:
-	-rm *.o *.output
+	-rm *.o $(TARGETS)
 

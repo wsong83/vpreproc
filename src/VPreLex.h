@@ -32,9 +32,10 @@
 
 #include "VFileLine.h"
 
+namespace VPPreProc {
 class VPreLex;
 class VPreProcImp;
-
+}
 //======================================================================
 // Token codes
 // If changing, see VPreProc.cpp's VPreProcImp::tokenName()
@@ -121,6 +122,7 @@ void yy_delete_buffer( YY_BUFFER_STATE b );
 //======================================================================
 // Entry for each file processed; a stack of entries included
 
+namespace VPPreProc {
 class VPreStream {
 public:
     VFileLine*		m_curFilelinep;	// Current processing point (see also m_tokFilelinep)
@@ -228,5 +230,7 @@ private:
 };
 
 inline void VPreStream::lexStreamDepthAdd(int delta) { m_lexp->streamDepthAdd(delta); }
+
+}
 
 #endif // Guard

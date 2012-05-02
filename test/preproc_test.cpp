@@ -20,23 +20,23 @@
  */
 
 /* 
- * Data structure to store macros
- * 30/04/2012   Wei Song
+ * Test for the Verilog preprocessor
+ * 27/04/2012   Wei Song
  *
  *
  */
 
-#include "VMacro.h"
-
-#include<boost/format.hpp>
-
-using std::string;
-using std::vector;
-
-#include<list>
-using std::list;
-
-#include<cctype>
+#include "src/preproc.h"
 
 using namespace VPPreProc;
 
+int main(int argc, char* argv[])
+{
+  VFileLineXs* filelinep = new VFileLineXs(NULL);
+  VPreProcXs* preprocp = new VPreProcXs();
+  filelinep->setPreproc(preprocp);
+  preprocp->configure(filelinep);
+  preprocp->openFile(argv[1]);
+
+  return 1;
+}

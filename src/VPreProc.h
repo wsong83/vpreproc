@@ -19,7 +19,7 @@
 /// Code available from: http://www.veripool.org/verilog-perl
 ///
 //*************************************************************************
-
+
 #ifndef _VPREPROC_H_
 #define _VPREPROC_H_ 1
 
@@ -28,6 +28,8 @@
 #include <iostream>
 using namespace std;
 #include "VFileLine.h"
+
+namespace VPPreProc {
 
 /// Generic opaque pointer to VPreProcImp implementation class.
 struct VPreProcOpaque {
@@ -113,5 +115,7 @@ public:
 private:
     VPreProcOpaque*	m_opaquep;	///< Pointer to parser's implementation data.
 };
+
+}
 
 #endif // Guard

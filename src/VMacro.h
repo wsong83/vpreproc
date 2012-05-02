@@ -42,7 +42,7 @@ namespace VPPreProc {
       : m_name(nm), m_para(para), m_value(mv) {}
 
     // helpers
-    bool is_parameterized() const { return m_para.size() > 0 }
+    bool is_parameterized() const { return m_para.size() > 0; }
     
     //data
     std::string m_name;         /* the name of the macro */

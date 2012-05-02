@@ -19,7 +19,7 @@
 /// Code available from: http://www.veripool.org/verilog-perl
 ///
 //*************************************************************************
-
+
 #ifndef _VFILELINE_H_
 #define _VFILELINE_H_ 1
 #include <string>
@@ -27,6 +27,7 @@
 #include <sstream>
 using namespace std;
 
+namespace VPPreProc {
 //============================================================================
 // VFileLine
 /// User information and error reporting functions
@@ -75,6 +76,8 @@ ostream& operator<<(ostream& os, VFileLine* fileline);
 
 template< class T> std::string cvtToStr (const T& t) {
     ostringstream os; os<<t; return os.str();
+}
+
 }
 
 #endif // Guard

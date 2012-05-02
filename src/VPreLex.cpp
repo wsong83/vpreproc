@@ -988,12 +988,14 @@ char *VPreLextext;
 #include <cstring>
 #include <iostream>
 
+using namespace VPPreProc;
+
 // Flex 2.5.35 has compile warning in ECHO, so we'll default our own rule
 #define ECHO yyerrorf("Missing VPreLex.l rule: ECHO rule invoked in state %d: %s", YY_START, VPreLextext);
 
-VPreLex* VPreLex::s_currentLexp = NULL;	// Current lexing point
+VPreLex* VPPreProc::VPreLex::s_currentLexp = NULL;	// Current lexing point
 
-#define LEXP VPreLex::s_currentLexp
+#define LEXP VPPreProc::VPreLex::s_currentLexp
 
 #define linenoInc()  { LEXP->linenoInc(); }
 static bool pedantic() { return LEXP->m_pedantic; }
@@ -2984,39 +2986,39 @@ void VPreLexfree (void * ptr )
 
 
 
-void VPreLex::pushStateDefArg(int level) {
+void VPPreProc::VPreLex::pushStateDefArg(int level) {
     // Enter define substitution argument state
     yy_push_state(ARGMODE);
     m_parenLevel = level;
     m_defValue = "";
 }
 
-void VPreLex::pushStateDefForm() {
+void VPPreProc::VPreLex::pushStateDefForm() {
     // Enter define formal arguments state
     yy_push_state(DEFFPAR);  // First is an optional ( to begin args
     m_parenLevel = 0;
     m_defValue = "";
 }
 
-void VPreLex::pushStateDefValue() {
+void VPPreProc::VPreLex::pushStateDefValue() {
     // Enter define value state
     yy_push_state(DEFVAL);
     m_parenLevel = 0;
     m_defValue = "";
 }
 
-void VPreLex::pushStateIncFilename() {
+void VPPreProc::VPreLex::pushStateIncFilename() {
     // Enter include <> filename state
     yy_push_state(INCMODE);
     yymore();
 }
 
-void VPreLex::debug(int level) {
+void VPPreProc::VPreLex::debug(int level) {
 #ifdef FLEX_DEBUG
     VPreLex_flex_debug=level;
 #endif
 }
-int VPreLex::debug() {
+int VPPreProc::VPreLex::debug() {
 #ifdef FLEX_DEBUG
     return VPreLex_flex_debug;
 #else
@@ -3024,13 +3026,13 @@ int VPreLex::debug() {
 #endif
 }
 
-int VPreLex::lex() {
+int VPPreProc::VPreLex::lex() {
     VPreLex::s_currentLexp = this;  // Tell parser where to get/put data
     m_tokFilelinep = curFilelinep();  // Remember token start location, may be updated by the lexer later
     return VPreLexlex();
 }
 
-size_t VPreLex::inputToLex(char* buf, size_t max_size) {
+size_t VPPreProc::VPreLex::inputToLex(char* buf, size_t max_size) {
     // We need a custom YY_INPUT because we can't use flex buffers.
     // Flex buffers are limited to 2GB, and we can't chop into 2G pieces
     // because buffers can't end in the middle of tokens.
@@ -3080,7 +3082,7 @@ size_t VPreLex::inputToLex(char* buf, size_t max_size) {
     return got;
 }
 
-string VPreLex::endOfStream(bool& againr) {
+string VPPreProc::VPreLex::endOfStream(bool& againr) {
     // Switch to file or next unputString
     againr = false;
     if (debug()) cout<<"-EOS state="<<curStreamp()->m_termState<<" at "<<curFilelinep()<<endl;
@@ -3139,7 +3141,7 @@ string VPreLex::endOfStream(bool& againr) {
     }
 }
 
-void VPreLex::initFirstBuffer(VFileLine* filelinep) {
+void VPPreProc::VPreLex::initFirstBuffer(VFileLine* filelinep) {
     // Called from constructor to make first buffer
     // VPreLex_create_buffer also sets yy_fill_buffer=1 so reads from YY_INPUT
     VPreStream* streamp = new VPreStream(filelinep, this);
@@ -3151,7 +3153,7 @@ void VPreLex::initFirstBuffer(VFileLine* filelinep) {
     VPreLexrestart(NULL);
 }
 
-void VPreLex::scanNewFile(VFileLine* filelinep) {
+void VPPreProc::VPreLex::scanNewFile(VFileLine* filelinep) {
     // Called on new open file.  scanBytesBack will be called next.
     if (streamDepth() > VPreProc::DEFINE_RECURSION_LEVEL_MAX) {
 	// The recursive `include in VPreProcImp should trigger first
@@ -3165,7 +3167,7 @@ void VPreLex::scanNewFile(VFileLine* filelinep) {
     }
 }
 
-void VPreLex::scanBytes(const string& str) {
+void VPPreProc::VPreLex::scanBytes(const string& str) {
     // Note buffers also appended in ::scanBytesBack
     // Not "m_buffers.push_front(string(strp,len))" as we need a `define
     // to take effect immediately, in the middle of the current buffer
@@ -3183,20 +3185,20 @@ void VPreLex::scanBytes(const string& str) {
     }
 }
 
-void VPreLex::scanSwitchStream(VPreStream* streamp) {
+void VPPreProc::VPreLex::scanSwitchStream(VPreStream* streamp) {
     curStreamp()->m_buffers.push_front(currentUnreadChars());
     m_streampStack.push(streamp);
     VPreLexrestart(NULL);
 }
 
-void VPreLex::scanBytesBack(const string& str) {
+void VPPreProc::VPreLex::scanBytesBack(const string& str) {
     // Initial creation, that will pull from YY_INPUT==inputToLex
     // Note buffers also appended in ::scanBytes
     if (curStreamp()->m_eof) yyerrorf("scanBytesBack without being under scanNewFile");
     curStreamp()->m_buffers.push_back(str);
 }
 
-string VPreLex::currentUnreadChars() {
+string VPPreProc::VPreLex::currentUnreadChars() {
     // WARNING - Peeking at internals
     ssize_t left = (yy_n_chars - (yy_c_buf_p -currentBuffer()->yy_ch_buf));
     if (left > 0) {  // left may be -1 at EOS
@@ -3207,15 +3209,15 @@ string VPreLex::currentUnreadChars() {
     }
 }
 
-YY_BUFFER_STATE VPreLex::currentBuffer() {
+YY_BUFFER_STATE VPPreProc::VPreLex::currentBuffer() {
     return YY_CURRENT_BUFFER;
 }
 
-int VPreLex::currentStartState() {
+int VPPreProc::VPreLex::currentStartState() {
     return YY_START;
 }
 
-void VPreLex::dumpSummary() {
+void VPPreProc::VPreLex::dumpSummary() {
     cout<<"-  pp::dumpSummary  curBuf="<<(void*)(currentBuffer());
 #ifdef FLEX_DEBUG  // Else peeking at internals may cause portability issues
     ssize_t left = (yy_n_chars
@@ -3226,7 +3228,7 @@ void VPreLex::dumpSummary() {
     cout<<endl;
 }
 
-void VPreLex::dumpStack() {
+void VPPreProc::VPreLex::dumpStack() {
     // For debug use
     dumpSummary();
     stack<VPreStream*> tmpstack = LEXP->m_streampStack;
@@ -3243,7 +3245,7 @@ void VPreLex::dumpStack() {
     }
 }
 
-string VPreLex::cleanDbgStrg(const string& in) {
+string VPPreProc::VPreLex::cleanDbgStrg(const string& in) {
     string out = in;
     string::size_type pos;
     while ((pos=out.find("\n")) != string::npos) { out.replace(pos, 1, "\\n"); }
@@ -3251,7 +3253,7 @@ string VPreLex::cleanDbgStrg(const string& in) {
     return out;
 }
 
-void VPreLex::unused() {
+void VPPreProc::VPreLex::unused() {
     if (0) {
 	// Prevent unused warnings
 	yy_top_state();

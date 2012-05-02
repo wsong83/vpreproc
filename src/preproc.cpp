@@ -34,8 +34,7 @@ using namespace VPPreProc;
 #// Overrides error handling virtual functions to invoke callbacks
 
 void VPPreProc::VFileLineXs::error(const string& msg) {
-    static string holdmsg; holdmsg = msg;
-    m_vPreprocp->call(NULL, 1,"error",holdmsg.c_str());
+  cout << msg << endl;
 }
 
 #//**********************************************************************
@@ -62,27 +61,28 @@ void VPPreProc::VPreProcXs::include(string filename) {
   //
 }
 void VPPreProc::VPreProcXs::undef(string define) {
-  //
+  map<string, VMacro*>::iterator it = db.find(define);
+  db.erase(it);
 }
 void VPPreProc::VPreProcXs::undefineall() {
-  //
+    // delete the macro database
+    for (map<string, VMacro*>::iterator it=db.begin(); it!=db.end(); ++it) {
+      delete it->second;
+    }  
 }
 void VPPreProc::VPreProcXs::define(string define, string value, string params) {
-  //
+  db.insert(pair<string, VMacro*>(define, new VMacro(define, value, params)));
 }
 bool VPPreProc::VPreProcXs::defExists(string define) {
-  //
+  return db.find(define) != db.end();
 }
 string VPPreProc::VPreProcXs::defParams(string define) {
-  string paramStr;
-  return paramStr;
+  return db.find(define)->second->m_para;
 }
 string VPPreProc::VPreProcXs::defValue(string define) {
-    string valueStr;
-    return valueStr;
+  return db.find(define)->second->m_value;
 }
 string VPPreProc::VPreProcXs::defSubstitute(string subs) {
-    string outStr;
-    return outStr;
+    return subs;
 }
 

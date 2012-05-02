@@ -43,7 +43,7 @@ class VFileLineXs;
 
 class VPreProcXs : public VPreProc {
 public:
-    SV*		m_self;	// Class called from (the hash, not SV pointing to the hash)
+  //SV* m_self;	// Class called from (the hash, not SV pointing to the hash)
     deque<VFileLineXs*> m_filelineps;
 
     VPreProcXs() : VPreProc() {}
