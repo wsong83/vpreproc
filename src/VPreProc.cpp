@@ -580,19 +580,19 @@ void VPPreProc::VPreProcImp::openFile(string filename, VFileLine* filelinep) {
     StrList wholefile;
     bool ok = readWholefile(filename, wholefile/*ref*/);
     if (!ok) {
-	error("File not found: "+filename+"\n");
-	return;
+      error("File not found: "+filename+"\n");
+      return;
     }
 
     if (!m_preprocp->isEof()) {  // IE not the first file.
-	// We allow the same include file twice, because occasionally it pops
-	// up, with guards preventing a real recursion.
-	if (m_lexp->m_streampStack.size()>VPreProc::INCLUDE_DEPTH_MAX) {
+      // We allow the same include file twice, because occasionally it pops
+      // up, with guards preventing a real recursion.
+      if (m_lexp->m_streampStack.size()>VPreProc::INCLUDE_DEPTH_MAX) {
 	    error("Recursive inclusion of file: "+filename);
 	    return;
-	}
-	// There's already a file active.  Push it to work on the new one.
-	addLineComment(0);
+      }
+      // There's already a file active.  Push it to work on the new one.
+      addLineComment(0);
     }
 
     // Create new stream structure
@@ -984,30 +984,30 @@ int VPPreProc::VPreProcImp::getStateToken(string& buf) {
 	}
 	case ps_INCNAME: {
 	    if (tok==VP_STRING) {
-		statePop();
-		m_lastSym.assign(yyourtext(),yyourleng());
-		if (debug()>=5) cout<<"Include "<<m_lastSym<<endl;
-		// Drop leading and trailing quotes.
-		m_lastSym.erase(0,1);
-		m_lastSym.erase(m_lastSym.length()-1,1);
-		m_preprocp->include(m_lastSym);
-		goto next_tok;
+          statePop();
+          m_lastSym.assign(yyourtext(),yyourleng());
+          if (debug()>=5) cout<<"Include "<<m_lastSym<<endl;
+          // Drop leading and trailing quotes.
+          m_lastSym.erase(0,1);
+          m_lastSym.erase(m_lastSym.length()-1,1);
+          m_preprocp->include(m_lastSym);
+          goto next_tok;
 	    }
 	    else if (tok==VP_TEXT && yyourleng()==1 && yyourtext()[0]=='<') {
-		// include <filename>
-		stateChange(ps_INCNAME);  // Still
-		m_lexp->pushStateIncFilename();
-		goto next_tok;
+          // include <filename>
+          stateChange(ps_INCNAME);  // Still
+          m_lexp->pushStateIncFilename();
+          goto next_tok;
 	    }
 	    else if (tok==VP_DEFREF
-		     || tok==VP_STRIFY) {
-		// Expand it, then state will come back here
-		break;
+                 || tok==VP_STRIFY) {
+          // Expand it, then state will come back here
+          break;
 	    }
 	    else {
-		statePop();
-		error((string)"Expecting include filename. Found: "+tokenName(tok)+"\n");
-		goto next_tok;
+          statePop();
+          error((string)"Expecting include filename. Found: "+tokenName(tok)+"\n");
+          goto next_tok;
 	    }
 	}
 	case ps_ERRORNAME: {

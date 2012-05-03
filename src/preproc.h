@@ -33,6 +33,7 @@
 #include "VPreProc.h"
 #include "VMacro.h"
 #include <deque>
+#include <list>
 
 namespace VPPreProc {
 
@@ -61,9 +62,12 @@ public:
     virtual string defSubstitute(string substitute);	// Return value to substitute for given post-parameter value
 
     void unreadback(char* text);
+    void define(string name, string value, string params, bool pre); // predefine a macro
+    void add_incr(const string& m_path);
 
  private:
-    map<string, VMacro*>  db;
+    std::map<std::string, VMacro*>  m_macroDB;
+    std::list<std::string>          m_incrList;
 };
 
 class VFileLineXs : public VFileLine {

@@ -28,6 +28,9 @@
 
 #include "preproc.h"
 
+#include <boost/filesystem.hpp>
+using namespace boost::filesystem;
+
 using namespace VPPreProc;
 
 #//**********************************************************************
@@ -46,7 +49,7 @@ VPPreProc::VPreProcXs::~VPreProcXs() {
     }
     
     // delete the macro database
-    for (map<string, VMacro*>::iterator it=db.begin(); it!=db.end(); ++it) {
+    for (map<string, VMacro*>::iterator it=m_macroDB.begin(); it!=m_macroDB.end(); ++it) {
       delete it->second;
     }
 }
@@ -57,41 +60,69 @@ VPPreProc::VPreProcXs::~VPreProcXs() {
 void VPPreProc::VPreProcXs::comment(string cmt) {
   // nothing
 }
+
 void VPPreProc::VPreProcXs::include(string filename) {
-  //
+  path p(filename);
+  if(exists(p)) {
+    openFile(p.string());
+    return;
+  }
+
+  list<string>::iterator it, end;
+  for(it=m_incrList.begin(), end=m_incrList.end(); it!=end; it++) {
+    path libp(*it + "/" + filename);
+    if(exists(libp)) {
+      cout << "YES!" << endl;
+      openFile(p.string());
+      return;
+    }
+  }
+
+  // fail to open any file
+  return;
+
 }
 void VPPreProc::VPreProcXs::undef(string define) {
-  map<string, VMacro*>::iterator it = db.find(define);
-  if(it != db.end()) {
+  map<string, VMacro*>::iterator it = m_macroDB.find(define);
+  if(it != m_macroDB.end()) {
     delete it->second;
-    db.erase(it);
+    m_macroDB.erase(it);
   }
 }
 void VPPreProc::VPreProcXs::undefineall() {
     // delete the macro database
-    for (map<string, VMacro*>::iterator it=db.begin(); it!=db.end(); ++it) {
-      delete it->second;
-      db.erase(it);
+    for (map<string, VMacro*>::iterator it=m_macroDB.begin(); it!=m_macroDB.end(); ++it) {
+      if(!it->second->m_pre) {    // only delete macros defined in files
+        delete it->second;
+        m_macroDB.erase(it);
+      }
     }  
 }
 void VPPreProc::VPreProcXs::define(string define, string value, string params) {
-  db.insert(pair<string, VMacro*>(define, new VMacro(define, value, params)));
+  this->define(define, value, params, false);
+}
+void VPPreProc::VPreProcXs::define(string define, string value, string params, bool pre) {
+  cout << "MACRO: " << define << params << ":" << value << endl;
+  m_macroDB.insert(pair<string, VMacro*>(define, new VMacro(define, value, params, pre)));
 }
 bool VPPreProc::VPreProcXs::defExists(string define) {
-  return db.find(define) != db.end();
+  return m_macroDB.find(define) != m_macroDB.end();
 }
 string VPPreProc::VPreProcXs::defParams(string define) {
-  map<string, VMacro*>::iterator it = db.find(define);
+  map<string, VMacro*>::iterator it = m_macroDB.find(define);
   
-  if(it != db.end()) 
+  if(it != m_macroDB.end()) 
     return it->second->m_para == "" ? "0" : it->second->m_para;
   else 
     return "";
 }
 string VPPreProc::VPreProcXs::defValue(string define) {
-  return db.find(define)->second->m_value;
+  return m_macroDB.find(define)->second->m_value;
 }
 string VPPreProc::VPreProcXs::defSubstitute(string subs) {
     return subs;
 }
 
+void VPPreProc::VPreProcXs::add_incr(const string& m_path) {
+  m_incrList.push_back(m_path);
+}

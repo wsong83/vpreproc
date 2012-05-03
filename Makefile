@@ -28,7 +28,7 @@ export FLEX_EXE = flex
 export CXX = g++
 
 export CXXFLAGS = -Wall -g
-export LINKFLAGS = 
+export LINKFLAGS = -lboost_system -lboost_filesystem -lboost_program_options
 
 # targets
 SUBDIRS = src

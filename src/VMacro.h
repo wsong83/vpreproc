@@ -38,8 +38,12 @@ namespace VPPreProc {
   class VMacro {
   public:
     // constructors
-    VMacro(const std::string& nm, const std::string& mv, const std::string& para = std::string())
-      : m_name(nm), m_para(para), m_value(mv) {}
+    VMacro( const std::string& nm, /* macro name */
+            const std::string& mv, /* macro value */
+            const std::string& para = std::string(), /* macro argument */
+            bool pre = false                         /* forced macro by command line */
+            )
+      : m_name(nm), m_para(para), m_value(mv), m_pre(pre) {}
 
     // helpers
     bool is_parameterized() const { return m_para.size() > 0; }
@@ -48,7 +52,7 @@ namespace VPPreProc {
     std::string m_name;         /* the name of the macro */
     std::string m_para;         /* parameter list */
     std::string m_value;        /* body definition */
-    
+    bool m_pre;
   };
 
 }
