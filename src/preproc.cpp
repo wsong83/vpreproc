@@ -72,8 +72,7 @@ void VPPreProc::VPreProcXs::include(string filename) {
   for(it=m_incrList.begin(), end=m_incrList.end(); it!=end; it++) {
     path libp(*it + "/" + filename);
     if(exists(libp)) {
-      cout << "YES!" << endl;
-      openFile(p.string());
+      openFile(libp.string());
       return;
     }
   }
@@ -102,7 +101,6 @@ void VPPreProc::VPreProcXs::define(string define, string value, string params) {
   this->define(define, value, params, false);
 }
 void VPPreProc::VPreProcXs::define(string define, string value, string params, bool pre) {
-  cout << "MACRO: " << define << params << ":" << value << endl;
   m_macroDB.insert(pair<string, VMacro*>(define, new VMacro(define, value, params, pre)));
 }
 bool VPPreProc::VPreProcXs::defExists(string define) {

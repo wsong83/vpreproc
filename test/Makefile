@@ -29,7 +29,10 @@ OTHER_OBJS = $(wildcard ../src/*.o)
 
 
 # targets
-all: $(TARGETS)
+all: exec_mv
+
+exec_mv: $(TARGETS)
+	cp preproc_test ../vpreproc
 
 $(TARGETS): % : %.cpp $(OTHER_OBJS)
 	$(CXX) $(INCDIRS) $(CXXFLAGS) $< $(OTHER_OBJS) $(LINKFLAGS) -o $@

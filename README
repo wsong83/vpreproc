@@ -2,21 +2,32 @@
 A Preprocessor for Verilog HDL
 ============================================
 
+This software is distributed under GPL v2.0 or later licenses.
+
 This is a standalone preprocessor for the Verilog HDL language.
 It is modified from the Verilog-PreProcessor of Verilog Perl tool 3.314.
 Most of the code is written by the team led by Wilson Snyder.
 
-What I may do in this project:
+What I have done in this project:
 * Provide a standalone command line interface (without Perl).
 * Replace the parts implemented in Perl to C++.
 * Encapsulate the package in a separated namespace for better independence.
+
+What I may do in the future:
 * Replace the C language features to C++.
 * Optimise some code for better reading or performance.
 
-Current stage:
-Ongoing without any usage.
-Pls stay tuned.
+INSTALL GUIDE
+Make sure you have GNU Make, gcc-g++, and boost library installed.
+Use make to make the project.
+The execute is named "vpreproc" in current directory.
 
+Using
+  vpreproc --help
+for usage information.
+
+
+Any question or request pls write to <wsong83@gmail.com>
 
 Dr. Wei Song
 APT, CS, University of Manchester
@@ -24,4 +35,4 @@ wsong83@gmail.com
 songw@cs.man.ac.uk
 http://wsong83.weebly.com/
 
-30/04/2012
+03/05/2012

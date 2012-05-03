@@ -31,8 +31,8 @@ export CXXFLAGS = -Wall -g
 export LINKFLAGS = -lboost_system -lboost_filesystem -lboost_program_options
 
 # targets
-SUBDIRS = src
-TESTDIRS = test
+SUBDIRS = src test
+TESTDIRS = 
 
 # actions
 
@@ -53,7 +53,7 @@ $(TESTDIRS):
 	$(MAKE) -C $@
 
 clean:
-	-rm *.o
+	-rm *.o vpreproc
 	-for d in $(SUBDIRS); do $(MAKE) -C $$d clean; done
 	-for d in $(TESTDIRS); do $(MAKE) -C $$d clean; done
 
