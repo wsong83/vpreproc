@@ -44,12 +44,28 @@ int main(int argc, char** argv)
   std::ofstream of_handle;
 
 
+  unsigned int opt_keep_comment;
+  unsigned int opt_keep_white_space;
+  unsigned int opt_line_directive;
+  unsigned int opt_pedantic;
+  unsigned int opt_synthesis;
+
   po::options_description preproc_opt("Preprocessor options");
   preproc_opt.add_options()
     ("help", "print usage")
     ("include,I", po::value<vector<string> >()->composing(), "include paths")
     ("macro,D", po::value<vector<string> >()->composing(), "macro defines")
     ("output,o", po::value<string>(), "output file")
+    ("keep_comment", po::value<unsigned int>(&opt_keep_comment)->default_value(1), 
+     "keep comment (default true/1)")
+    ("keep_white_space", po::value<unsigned int>(&opt_keep_white_space)->default_value(1), 
+     "keep white space (default true/1)")
+    ("line_directive", po::value<unsigned int>(&opt_line_directive)->default_value(1), 
+     "insert line directive (default true/1)")
+    ("pedantic", po::value<unsigned int>(&opt_pedantic)->default_value(0), 
+     "pedantic, obey stanard (default false/0)")
+    ("synthesis", po::value<unsigned int>(&opt_synthesis)->default_value(1), 
+     "recognize synthesis on and off directives (default true/1)")
     ;
 
   po::options_description input_opt;
@@ -98,6 +114,12 @@ int main(int argc, char** argv)
   filelinep->setPreproc(preprocp);
   preprocp->configure(filelinep);
   preprocp->openFile(inpfile);
+
+  preprocp->keepComments(opt_keep_comment);
+  preprocp->keepWhitespace(opt_keep_white_space);
+  preprocp->lineDirectives(opt_line_directive != 0);
+  preprocp->pedantic(opt_pedantic != 0);
+  preprocp->synthesis(opt_synthesis != 0);
 
   if(vm.count("macro")) {
     vector<string> mlist = vm["macro"].as<vector<string> >();

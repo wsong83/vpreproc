@@ -462,29 +462,31 @@ string VPPreProc::VPreProcImp::defineSubst(VPreDefRef* refp) {
 	bool backslashesc = false;  // In \.....{space} block
 	// Note we go through the loop once more at the NULL end-of-string
 	for (const char* cp=value.c_str(); (*cp) || argName!=""; cp=(*cp?cp+1:cp)) {
-	    //cout << "CH "<<*cp<<"  an "<<argName<<"\n";
-	    if (!quote && *cp == '\\') { backslashesc = true; }
-	    else if (isspace(*cp)) { backslashesc = false; }
-	    // We don't check for quotes; some simulators expand even inside quotes
-	    if ( isalpha(*cp) || *cp=='_'
-		 || *cp=='$' // Won't replace system functions, since no $ in argValueByName
-		 || (argName!="" && (isdigit(*cp) || *cp=='$'))) {
+      //cout << "CH "<<*cp<<"  an "<<argName<<"\n";
+      if (!quote && *cp == '\\') { backslashesc = true; }
+      else if (isspace(*cp)) { backslashesc = false; }
+      // We don't check for quotes; some simulators expand even inside quotes
+      if (!quote && ( isalpha(*cp) || *cp=='_'
+                      || *cp=='$' // Won't replace system functions, since no $ in argValueByName
+                      || (argName!="" && (isdigit(*cp) || *cp=='$'))
+                      )
+          ) {
 		argName += *cp;
 		continue;
-	    }
-	    if (argName != "") {
+      }
+      if (argName != "") {
 		// Found a possible variable substitution
 		map<string,string>::iterator iter = argValueByName.find(argName);
 		if (iter != argValueByName.end()) {
-		    // Substitute
-		    string subst = iter->second;
-		    out += subst;
+          // Substitute
+          string subst = iter->second;
+          out += subst;
 		} else {
-		    out += argName;
+          out += argName;
 		}
 		argName = "";
-	    }
-	    if (!quote) {
+      }
+      if (!quote) {
 		// Check for `` only after we've detected end-of-argname
 		if (cp[0]=='`' && cp[1]=='`') {
 		    if (backslashesc) {
@@ -521,21 +523,21 @@ string VPPreProc::VPreProcImp::defineSubst(VPreDefRef* refp) {
 		    cp++;
 		    continue;
 		}
-	    }
-	    if (cp[0]=='\\' && cp[1]=='\"') {
+      }
+      if (cp[0]=='\\' && cp[1]=='\"') {
 		out += cp[0]; // \{any} Put out literal next character
 		out += cp[1];
 		cp++;
 		continue;
-	    }
-	    else if (cp[0]=='\\') {
+      }
+      else if (cp[0]=='\\') {
 		// Normally \{any} would put out literal next character
 		// Instead we allow "`define A(nm) \nm" to expand, per proposed mantis1537
 		out += cp[0];
 		continue;
-	    }
-	    if (*cp=='"') quote=!quote;
-	    if (*cp) out += *cp;
+      }
+      if (*cp=='"') quote=!quote;
+      if (*cp) out += *cp;
 	}
     }
 
