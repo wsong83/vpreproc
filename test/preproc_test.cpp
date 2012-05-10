@@ -85,7 +85,7 @@ int main(int argc, char** argv)
     store(po::command_line_parser(argc, argv).options(all_opt).positional(p).run(), vm);
     notify(vm);
   } catch(exception& e) {
-    cout << "Wrong command syntex! See usage using --help." << endl;
+    cout << "Wrong command syntax! See usage using --help." << endl;
     return 1;
   }
 
