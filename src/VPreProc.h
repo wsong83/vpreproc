@@ -96,7 +96,7 @@ public:
 
     // ACCESSORS
     /// Insert given file into this point in input stream
-    void openFile(std::string filename, VFileLine* filelinep=NULL);
+    bool openFile(std::string filename, VFileLine* filelinep=NULL);
     void debug(int level);	///< Set debugging level
     std::string getall(size_t approx_chunk);	///< Return all lines, or at least approx_chunk bytes. (Null if done.)
     std::string getline();		///< Return next line/lines. (Null if done.)
